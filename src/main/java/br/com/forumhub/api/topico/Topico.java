@@ -1,6 +1,7 @@
 package br.com.forumhub.api.topico;
 
 import br.com.forumhub.api.curso.Curso;
+import br.com.forumhub.api.resposta.Resposta;
 import br.com.forumhub.api.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,6 +12,8 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(name = "topico_forum")
 @Entity(name = "Topico")
@@ -35,8 +38,6 @@ public class Topico {
 
     private Boolean status;
 
-    private String respostas;
-
     @ManyToOne
     @JoinColumn(name = "id_autor", nullable = false)
     private Usuario idUsuario;
@@ -45,10 +46,14 @@ public class Topico {
     @JoinColumn(name = "id_curso", nullable = false)
     private Curso idCurso;
 
-    public Topico(DadosCriacaoTopico dadosTopico) {
+    @OneToMany(mappedBy = "topico", cascade = CascadeType.ALL)
+    private List<Resposta> respostas = new ArrayList<>();
+
+    public Topico(DadosCriacaoTopico dadosTopico, Usuario autor, Curso curso) {
         this.titulo = dadosTopico.titulo();
         this.conteudo = dadosTopico.conteudo();
         this.status = dadosTopico.status();
-        this.respostas = dadosTopico.respostas();
+        this.idUsuario = autor;
+        this.idCurso = curso;
     }
 }

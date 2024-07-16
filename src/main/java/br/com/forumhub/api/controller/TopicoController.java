@@ -1,21 +1,17 @@
 package br.com.forumhub.api.controller;
 
-import br.com.forumhub.api.curso.Curso;
-import br.com.forumhub.api.curso.CursoRepository;
 import br.com.forumhub.api.exceptions.ResourceNotFoundException;
 import br.com.forumhub.api.topico.DadosCriacaoTopico;
 import br.com.forumhub.api.topico.Topico;
 import br.com.forumhub.api.topico.TopicoRepository;
 import br.com.forumhub.api.usuario.Usuario;
 import br.com.forumhub.api.usuario.UsuarioRepository;
+import br.com.forumhub.api.curso.Curso;
+import br.com.forumhub.api.curso.CursoRepository;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/topico")
@@ -32,17 +28,14 @@ public class TopicoController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<?> criarTopico(@RequestBody DadosCriacaoTopico dadosTopico) {
-        Usuario usuario = usuarioRepository.findById(dadosTopico.idUsuario())
-                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
+    public void criarTopico(@RequestBody @Valid DadosCriacaoTopico dadosTopico) {
+        Usuario autor = usuarioRepository.findById(dadosTopico.idUsuario())
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com o ID: " + dadosTopico.idUsuario()));
+
         Curso curso = cursoRepository.findById(dadosTopico.idCurso())
-                .orElseThrow(() -> new ResourceNotFoundException("Curso não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Curso não encontrado com o ID: " + dadosTopico.idCurso()));
 
-        Topico topico = new Topico(dadosTopico);
-        topico.setIdUsuario(usuario);
-        topico.setIdCurso(curso);
-
-        Topico topicoSalvo = topicoRepository.save(topico);
-        return ResponseEntity.status(HttpStatus.CREATED).body(topicoSalvo);
+        Topico topico = new Topico(dadosTopico, autor, curso);
+        topicoRepository.save(topico);
     }
 }

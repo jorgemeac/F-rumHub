@@ -14,14 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("usuario")
 public class UsuarioController {
-    @Autowired //Injeção de dependências para ser colocado no Readme
+
+    @Autowired
     private UsuarioRepository repository;
 
     @PostMapping
     @Transactional
-    public void criarUsuario(@RequestBody @Valid DadosUsuario dadosUsuario){
+    public void criarUsuario(@RequestBody @Valid DadosUsuario dadosUsuario) {
         repository.save(new Usuario(dadosUsuario));
     }
-
 }
-

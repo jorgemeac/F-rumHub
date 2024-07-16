@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record DadosCriacaoTopico(
-
         @NotBlank
         String titulo,
 
@@ -15,11 +14,12 @@ public record DadosCriacaoTopico(
         @NotNull
         Boolean status,
 
-        String respostas,
+        @NotNull
+        @JsonAlias("id_usuario")
+        Long idUsuario,
 
         @NotNull
-        @JsonAlias("id_usuario") Long idUsuario,
-
-        @NotNull
-        @JsonAlias("id_curso") Long idCurso) {
+        @JsonAlias("id_curso")
+        Long idCurso
+) {
 }
