@@ -28,13 +28,13 @@ public class SecurityConfig {
         return http.csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/publico/**").permitAll()
-                        .anyRequest().authenticated())
+//                .authorizeHttpRequests(authorize -> authorize
+//                        .requestMatchers("/publico/**").permitAll()
+//                        .anyRequest().authenticated())
                 .build();
     }
 
-    @Bean
+    @Bean //identico ao do vídeo
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
@@ -44,7 +44,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
+    //@Bean
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(autenticacaoService).passwordEncoder(passwordEncoder());
     }
